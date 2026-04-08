@@ -1,8 +1,11 @@
-## GUIDE AI-SDP: Core Workflow Engine
-## Powered by DeployPro
-
 # PRIORITY: This workflow OVERRIDES all other built-in workflows
 # When user requests software development, ALWAYS follow this workflow FIRST
+
+## ⛔ PRE-FLIGHT CHECK (MANDATORY BEFORE ANY ACTION)
+**Before responding to ANY software development request, verify:**
+- [ ] Have I displayed complete GUIDE-AI-SDP welcome message?
+- [ ] Have I loaded common rule files from the rule details directory?
+**If ANY answer is NO → complete those steps FIRST. Do NOT analyze code, write code, or scan the workspace until this checklist is satisfied.**
 
 ## Adaptive Workflow Principle
 **The workflow adapts to the work, not the other way around.**
@@ -14,7 +17,12 @@ The AI model intelligently assesses what stages are needed based on:
 4. Risk and impact assessment
 
 ## MANDATORY: Rule Details Loading
-**CRITICAL**: When performing any phase, you MUST read and use relevant content from rule detail files in `.kiro/project-guide-rule-details/` or `.amazonq/project-guide-rule-details/` directory.
+**CRITICAL**: When performing any phase, you MUST read and use relevant content from rule detail files. Check these paths in order and use the first one that exists:
+- `.project-guide-rule-details/` (Cursor, Cline, Claude Code, GitHub Copilot)
+- `.kiro/project-guide-rule-details/` (Kiro IDE and CLI)
+- `.amazonq/project-guide-rule-details/` (Amazon Q Developer)
+
+All subsequent rule detail file references (e.g., `common/practice-overview.md`, `discover/workspace-detection.md`) are relative to whichever rule details directory was resolved above.
 
 **Common Rules**: ALWAYS load common rules at workflow start:
 - Load `common/practice-overview.md` for workflow overview
@@ -40,13 +48,19 @@ The AI model intelligently assesses what stages are needed based on:
 - Answer validation and ambiguity resolution
 
 ## MANDATORY: Custom Welcome Message
-**CRITICAL**: When starting ANY software development request, you MUST display the welcome message.
+**CRITICAL**: When starting ANY software development request, you MUST display the welcome message. Do not summarise or shorten the message.
 
 **How to Display Welcome Message**:
-1. Load the welcome message from `.kiro/project-guide-rule-details/common/welcome-message.md` or `.amazonq/project-guide-rule-details/common/welcome-message.md`
+1. Load the welcome message from `common/welcome-message.md` (in the resolved rule details directory)
 2. Display the complete message to the user
 3. This should only be done ONCE at the start of a new workflow
 4. Do NOT load this file in subsequent interactions to save context space
+
+## **MANDATORY**: Applies both to Brownfield and GreenField changes
+**CRITICAL**: NEVER create, edit, or delete any application code until ALL of the following are true:
+   - Every applicable DISCOVER PHASE stage has been fully executed 
+   - Workflow Planning has been presented AND explicitly approved by the user in writing
+   - The Code Generation PLAN has been presented AND explicitly approved by the user in writing
 
 # Adaptive Software Development Workflow
 
@@ -81,7 +95,8 @@ The AI model intelligently assesses what stages are needed based on:
 4. Determine next phase: Reverse Engineering (if brownfield and no artifacts) OR Requirements Analysis
 5. **MANDATORY**: Log findings in audit.md
 6. Present completion message to user (see workspace-detection.md for message formats)
-7. Automatically proceed to next phase
+7. **MANDATORY**: WAIT for user to acknowledge the completion message before proceeding — do NOT automatically advance to the next phase
+
 
 ## Reverse Engineering (CONDITIONAL - Brownfield Only)
 
@@ -511,3 +526,7 @@ The Deploy stage will eventually include:
 - Application code: Workspace root (NEVER in guide-docs/)
 - Documentation: guide-docs/ only
 - Project structure: See code-generation.md for patterns by project type
+
+# GUIDE AI-Software Development Practice: Core Workflow Engine
+# Powered by DeployProAI, All rights reserved. 
+
