@@ -25,8 +25,8 @@
 - [x] Functional Design
 - [x] NFR Requirements
 - [x] NFR Design
-- [ ] Infrastructure Design
-- [ ] Code Generation
+- [x] Infrastructure Design
+- [x] Code Generation
 - [ ] Build and Test
 
 ### 🟡 DEPLOY PHASE
