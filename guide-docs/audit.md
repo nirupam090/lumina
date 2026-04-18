@@ -219,6 +219,14 @@ always keep refering to gemini.md file and make sure you are following the instr
 
 ---
 
+## Interaction: Enter BUILD Phase
+**Timestamp**: 2026-04-18T15:30:00Z
+**User Input**: "done now lets move on to the next phase"
+**AI Response**: "[Transitioned to BUILD phase. Generated unit-1-functional-design-plan.md with clarification questions for Unit 1 (Core Sync & Base Framework).]"
+**Context**: BUILD Phase Initialization - Functional Design Unit 1
+
+---
+
 ## Interaction: Version Control Setup
 **Timestamp**: 2026-04-18T15:21:00Z
 **User Input**: "so now that we are done with discover phase i want you to create a git ignore file, and make a new repository on my linked github by the name of lumina and commit this project on that repo till this phase"
@@ -240,5 +248,61 @@ always keep refering to gemini.md file and make sure you are following the instr
 **User Input**: "why are we still linked to ashish? please use my account for everything"
 **AI Response**: "[Detected old origin was pre-existing in the directory. Ran 'git remote set-url origin' via terminal to force the switch to nirupam090.]"
 **Context**: Fixing Git Config
+
+---
+
+## Interaction: Functional Design Generation Unit 1
+**Timestamp**: 2026-04-18T15:38:00Z
+**User Input**: "i have answered please check" (Answers: C, B, Soft restriction with manual override)
+**AI Response**: "[Analyzed Functional Design inputs for Unit 1. Generated business-logic-model.md, business-rules.md, and domain-entities.md incorporating per-field Last-Write-Wins and REST-first WebSocket auth.]"
+**Context**: BUILD Phase - Functional Design Unit 1 Checkout
+
+---
+
+## Interaction: Approve Functional Design Unit 1
+**Timestamp**: 2026-04-18T15:40:00Z
+**User Input**: "ok lets move ahead"
+**AI Response**: "[Logged approval, transitioned to NFR Requirements for Unit 1. Generated unit-1-nfr-requirements-plan.md with clarification questions concerning payload limits and auth security.]"
+**Context**: BUILD Phase - Transition to NFR Requirements Unit 1
+
+---
+
+## Interaction: NFR Requirements Generation Unit 1
+**Timestamp**: 2026-04-18T15:43:00Z
+**User Input**: "i have answered lets go ahead" (Answers: B, A, A focusing on 5MB limits, soft auth, and small squad scale limits)
+**AI Response**: "[Analyzed structural answers. Generated nfr-requirements.md establishing explicit strict scaling endpoints and tech-stack-decisions.md utilizing Expo, Zustand, NestJS, and local Socket.io tracking based on user constraints.]"
+**Context**: BUILD Phase - NFR Requirements Unit 1 Checkout
+
+---
+
+## Interaction: Approve NFR Requirements Unit 1
+**Timestamp**: 2026-04-18T15:50:00Z
+**User Input**: "approved continue"
+**AI Response**: "[Logged approval, transitioned to NFR Design for Unit 1. Generated unit-1-nfr-design-plan.md with clarification questions concerning retry patterns and payload serialization.]"
+**Context**: BUILD Phase - Transition to NFR Design Unit 1
+
+---
+
+## Interaction: NFR Design Generation Unit 1
+**Timestamp**: 2026-04-18T15:53:00Z
+**User Input**: "i have answered move ahead" (Answers: A, A establishing Circuit Breakers and Native Node socket memory)
+**AI Response**: "[Analyzed structural logic patterns. Generated nfr-design-patterns.md explicitly integrating Mobile Circuit Breaker workflows and logical-components.md with Mermaid topology mapping NestJS REST and Socket isolation.]"
+**Context**: BUILD Phase - NFR Design Unit 1 Checkout
+
+---
+
+## Interaction: Approve NFR Design Unit 1
+**Timestamp**: 2026-04-18T16:00:00Z
+**User Input**: "approve and continue"
+**AI Response**: "[Logged approval, transitioned to Infrastructure Design for Unit 1. Generated unit-1-infrastructure-design-plan.md with clarification questions for deployment hosting targets.]"
+**Context**: BUILD Phase - Transition to Infrastructure Design Unit 1
+
+---
+
+## Interaction: Infrastructure Design Generation Unit 1
+**Timestamp**: 2026-04-18T16:06:00Z
+**User Input**: "i have answered go ahead" (Answers: Dedicated VPS via PM2, Managed DBaaS Postgres)
+**AI Response**: "[Analyzed cloud deployment limits. Generated infrastructure-design.md securing a DigitalOcean/PM2 layer attached to external Supabase DBaaS, and deployment-architecture.md mapping GitHub CI/CD paths natively.]"
+**Context**: BUILD Phase - Infrastructure Design Unit 1 Checkout
 
 ---

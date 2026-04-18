@@ -22,9 +22,9 @@
 - [x] Units Generation
 
 ### 🟢 BUILD PHASE
-- [ ] Functional Design
-- [ ] NFR Requirements
-- [ ] NFR Design
+- [x] Functional Design
+- [x] NFR Requirements
+- [x] NFR Design
 - [ ] Infrastructure Design
 - [ ] Code Generation
 - [ ] Build and Test
