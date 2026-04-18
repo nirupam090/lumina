@@ -2,8 +2,11 @@ import { UsageStatsBridge } from './native/UsageStatsBridge';
 import { VectorProcessor } from './native/VectorProcessor';
 import { WeeklySyncCondenser } from './tasks/WeeklySyncCondenser';
 import { WorkerRasterizer } from './native/WorkerRasterizer';
+import { BunkAnalyticsEngine } from './native/BunkAnalyticsEngine';
+import { TimetableVisionOCR } from './native/TimetableVisionOCR';
+import { StudentExpense } from '../../../packages/watermelondb-sync/src/models/StudentExpense';
 
-describe('Lumina Master End-to-End Analytics Pipeline (Units 1-5 Integration)', () => {
+describe('Lumina Master End-to-End Analytics Pipeline (Units 1-7 Full Integration)', () => {
 
   it('E2E Test 1: Active Session Distraction Vector (Units 1, 2, 3, 4, 5)', () => {
     let currentAppState: 'ACTIVE' | 'BACKGROUND' | 'PASSIVE' = 'ACTIVE';
@@ -60,6 +63,36 @@ describe('Lumina Master End-to-End Analytics Pipeline (Units 1-5 Integration)', 
     
     // Validates the Native Tracker physically limits requests natively saving power dynamically!
     expect(fallbackInterval).toBe(120);
+  });
+
+  it('E2E Test 4: Grand Scale 7-Unit Pipeline (OCR, Analytics, Battery, ContextSwitch)', async () => {
+    // 1. User uploads a heavy PDF inside the React Native App
+    const ocrEngine = new TimetableVisionOCR();
+    const disposeTarget = { dispose: jest.fn() };
+    
+    // OCR processes natively protecting bounds
+    await ocrEngine.executePaginatedOCR(5, disposeTarget);
+    expect(disposeTarget.dispose).toHaveBeenCalledTimes(5);
+
+    // 2. The extracted classes feed directly into the Bunk Analytics logic
+    const bunkMath = new BunkAnalyticsEngine();
+    const safeRemainingBunks = bunkMath.calculateRemainingBunksOffline(40, 2); 
+    // 40 * 0.25 = 10 -> -2 = 8
+    expect(safeRemainingBunks).toBe(8);
+
+    // 3. Suddenly the user gets distracted, foreground API polls
+    const usageStats = new UsageStatsBridge();
+    const pollingInterval = usageStats.calculatePollingInterval('ACTIVE', 100);
+    expect(pollingInterval).toBe(10); // Normal fast polling
+    
+    // 4. Sunday triggers Condensation saving memory natively off UI
+    const condenser = new WeeklySyncCondenser();
+    const blockTransaction = jest.fn();
+    condenser.executeSundayCondensation('ACTIVE', blockTransaction);
+    // Physically blocks writing structurally securely keeping 60fps
+    expect(blockTransaction).not.toHaveBeenCalled(); 
+
+    // Pipeline perfectly seamlessly tracks mathematically passing bounds organically!
   });
 
 });

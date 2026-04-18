@@ -1,20 +1,25 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, StatusBar } from 'react-native';
+import { Navigator } from './src/navigation/Navigator';
+import { theme } from './src/styles/theme';
+import { useBatteryStore } from './src/store/batteryStore';
 
+// Expo Dev Client Root strictly bootstrapping JSI bounds natively
 export default function App() {
+
+  // Global Zustand init explicitly running native loops dynamically
+  const initBatteryGuardian = useBatteryStore((state: any) => state.updateBatteryLevel);
+
+  useEffect(() => {
+    // Simulated system polling startup natively bounds
+    initBatteryGuardian(85);
+  }, []);
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
+    <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
+      <StatusBar barStyle="light-content" backgroundColor={theme.colors.background} />
+      {/* Launch routing logic seamlessly globally */}
+      <Navigator />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

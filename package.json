@@ -366,7 +366,8 @@
     "yaml": "^2.8.3",
     "yargs": "^17.7.2",
     "yargs-parser": "^21.1.1",
-    "yocto-queue": "^0.1.0"
+    "yocto-queue": "^0.1.0",
+    "zustand": "^5.0.12"
   },
   "repository": {
     "type": "git",
