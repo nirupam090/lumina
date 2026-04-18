@@ -218,3 +218,27 @@ always keep refering to gemini.md file and make sure you are following the instr
 **Context**: DISCOVER - Units Generation Checkout and Transition to Build Phase
 
 ---
+
+## Interaction: Version Control Setup
+**Timestamp**: 2026-04-18T15:21:00Z
+**User Input**: "so now that we are done with discover phase i want you to create a git ignore file, and make a new repository on my linked github by the name of lumina and commit this project on that repo till this phase"
+**AI Response**: "[Created .gitignore, executed local git init and commit. Informed user that GitHub CLI is missing and provided manual repository link instructions.]"
+**Context**: DISCOVER Phase Finalization
+
+---
+
+## Interaction: GitHub Account Correction
+**Timestamp**: 2026-04-18T15:23:00Z
+**User Input**: "why are we using ashish tripathi's git - i want you to use my linked github which is my account - with id - nirupam090"
+**AI Response**: "[Apologized for extracting workspace config username by mistake, provided corrected git remote commands for nirupam090, asked to proceed to BUILD]"
+**Context**: Finalizing DISCOVER and Version Control
+
+---
+
+## Interaction: Fix Git Remote Origin
+**Timestamp**: 2026-04-18T15:26:00Z
+**User Input**: "why are we still linked to ashish? please use my account for everything"
+**AI Response**: "[Detected old origin was pre-existing in the directory. Ran 'git remote set-url origin' via terminal to force the switch to nirupam090.]"
+**Context**: Fixing Git Config
+
+---
