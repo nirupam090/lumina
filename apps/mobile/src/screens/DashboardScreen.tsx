@@ -141,13 +141,22 @@ export const DashboardScreen = () => {
     setWeeklyTotal((t) => t + amount);
   };
 
-  const exportCSV = async () => {
+  const exportWeeklyWrap = async () => {
     const csv = csvExport.buildCSVString(expenses);
-    try {
-      await Share.share({ message: csv, title: 'Lumina Weekly Expenses' });
-    } catch (e) {
-      Alert.alert('Export', 'CSV data:\n\n' + csv);
-    }
+    Alert.alert(
+      'Weekly Student Wrap 📊',
+      `You spent ₹${weeklyTotal} this week over ${expenses.length} transactions.\n\nTop spend: ${expenses.sort((a,b)=>b.amount-a.amount)[0]?.name || 'None'}\nRemaining budget is healthy!\n\nWould you like to export the raw CSV data?`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Export CSV', onPress: async () => {
+          try {
+            await Share.share({ message: csv, title: 'Lumina Weekly Wrap' });
+          } catch (e) {
+            Alert.alert('Export', 'CSV data:\n\n' + csv);
+          }
+        }}
+      ]
+    );
   };
 
   const simBattery = () => {
@@ -296,9 +305,9 @@ export const DashboardScreen = () => {
             <Text style={styles.expenseAmount}>₹{e.amount}</Text>
           </View>
         ))}
-        <TouchableOpacity style={styles.exportBtn} onPress={exportCSV} activeOpacity={0.8}>
-          <Ionicons name="download-outline" size={16} color={theme.colors.accentBlue} />
-          <Text style={styles.exportText}>Export CSV</Text>
+        <TouchableOpacity style={styles.exportBtn} onPress={exportWeeklyWrap} activeOpacity={0.8}>
+          <Ionicons name="bar-chart-outline" size={16} color={theme.colors.accentBlue} />
+          <Text style={styles.exportText}>View Weekly Student Wrap</Text>
         </TouchableOpacity>
       </View>
 

@@ -6,10 +6,11 @@ import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { theme } from '../styles/theme';
 import { BunkAnalyticsEngine } from '../native/BunkAnalyticsEngine';
-import { useOfflineOCR } from '../services/OfflineOCREngine';
+import { OCRService } from '../services/OCRService';
 import { useBatteryStore } from '../store/batteryStore';
 
 const bunkEngine = new BunkAnalyticsEngine();
+const ocrService = new OCRService();
 
 type ViewMode = 'today' | 'week';
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -27,8 +28,6 @@ interface ClassItem {
 const INITIAL_SCHEDULE: ClassItem[] = [];
 
 export const TimetableScreen = () => {
-  const { OCRWebView, processImage: runOCR, isEngineReady, progress: ocrProgress } = useOfflineOCR();
-
   const [viewMode, setViewMode] = useState<ViewMode>('today');
   const [selectedDay, setSelectedDay] = useState(Math.max(0, Math.min(new Date().getDay() - 1, 5)));
   const [schedule, setSchedule] = useState<ClassItem[]>(INITIAL_SCHEDULE);
@@ -36,7 +35,7 @@ export const TimetableScreen = () => {
   const [ocrStatus, setOcrStatus] = useState<'idle' | 'picking' | 'processing' | 'confirming' | 'done'>('idle');
   const [pickedImageUri, setPickedImageUri] = useState<string | null>(null);
   const [extractedClasses, setExtractedClasses] = useState<ClassItem[]>([]);
-  const [ocrResult, setOcrResult] = useState<{ method: string; confidence: number; rawText: string; timeMs: number } | null>(null);
+  const [ocrResult, setOcrResult] = useState<{ method: string; confidence: number; classCount: number } | null>(null);
   const batterySaver = useBatteryStore((s) => s.batterySaverMode);
 
   // Live countdown
@@ -106,40 +105,31 @@ export const TimetableScreen = () => {
       setPickedImageUri(uri);
       setOcrStatus('processing');
 
-      // Process through OFFLINE Tesseract.js OCR
-      runOCR(uri, (ocrData) => {
-        if (!ocrData.success) {
-          Alert.alert(
-            'OCR Error',
-            ocrData.error || 'Failed to analyze image.',
-            [{ text: 'OK' }]
-          );
-          setOcrStatus('idle');
-          return;
-        }
+      // Process through Gemini Vision AI OCR
+      const ocrData = await ocrService.analyzeImage(uri);
 
-        // Map OCR results into ClassItem format
-        const now = Date.now();
-        const extracted: ClassItem[] = ocrData.classes.map((ec, i) => ({
-          id: `${now}_${i}`,
-          name: ec.name,
-          time: ec.time,
-          room: ec.room,
-          day: ec.day,
-          attended: false,
-        }));
+      if (!ocrData.success) {
+        Alert.alert('OCR Error', ocrData.error || 'Failed to analyze image.', [{ text: 'OK' }]);
+        setOcrStatus('idle');
+        return;
+      }
 
-        setExtractedClasses(extracted);
-        setOcrResult({
-          method: 'TESSERACT_OFFLINE',
-          confidence: ocrData.confidence,
-          rawText: ocrData.rawText,
-          timeMs: ocrData.processingTimeMs,
-        });
-        setOcrStatus('confirming');
-      });
+      // Map OCR results into ClassItem format
+      const now = Date.now();
+      const extracted: ClassItem[] = ocrData.classes.map((ec, i) => ({
+        id: `${now}_${i}`,
+        name: ec.name,
+        time: ec.time,
+        room: ec.room,
+        day: ec.day,
+        attended: false,
+      }));
+
+      setExtractedClasses(extracted);
+      setOcrResult({ method: 'GEMINI_VISION', confidence: ocrData.confidence, classCount: extracted.length });
+      setOcrStatus('confirming');
     } catch (e: any) {
-      Alert.alert('Error', e.message || 'Failed to process image. Please try again.');
+      Alert.alert('Error', e.message || 'Failed to process image.');
       setOcrStatus('idle');
     }
   };
@@ -259,36 +249,15 @@ export const TimetableScreen = () => {
         <View style={{ height: 80 }} />
       </ScrollView>
 
-      {/* Hidden Tesseract.js OCR Engine */}
-      <OCRWebView />
-
-      {/* Processing Overlay */}
-      {ocrStatus === 'processing' && (
-        <View style={styles.processingOverlay}>
-          <View style={styles.processingCard}>
-            {pickedImageUri && (
-              <Image source={{ uri: pickedImageUri }} style={styles.processingImage} resizeMode="cover" />
-            )}
-            <Ionicons name="scan-outline" size={36} color={theme.colors.accentViolet} />
-            <Text style={styles.processingTitle}>Analyzing Timetable...</Text>
-            <Text style={styles.processingHint}>Tesseract.js · 100% Offline OCR</Text>
-            <View style={styles.progressBarTrack}>
-              <View style={[styles.progressBarFill, { width: `${ocrProgress}%` }]} />
-            </View>
-            <Text style={styles.processingPercent}>{ocrProgress}%</Text>
-          </View>
-        </View>
-      )}
-
       {/* OCR FAB */}
       <TouchableOpacity
-        style={[styles.fab, !isEngineReady && styles.fabLoading, ocrStatus === 'processing' && styles.fabProcessing]}
+        style={[styles.fab, ocrStatus === 'processing' && styles.fabProcessing]}
         onPress={startOCR}
         activeOpacity={0.8}
-        disabled={ocrStatus === 'processing' || !isEngineReady}
+        disabled={ocrStatus === 'processing'}
       >
-        <Ionicons name={!isEngineReady ? 'hourglass-outline' : 'scan-outline'} size={24} color={theme.colors.white} />
-        <Text style={styles.fabLabel}>{!isEngineReady ? 'Loading OCR...' : 'Upload'}</Text>
+        <Ionicons name={ocrStatus === 'processing' ? 'sync-outline' : 'scan-outline'} size={24} color={theme.colors.white} />
+        <Text style={styles.fabLabel}>{ocrStatus === 'processing' ? 'Parsing...' : 'Upload'}</Text>
       </TouchableOpacity>
 
       {/* OCR Confirmation Modal */}
@@ -309,34 +278,17 @@ export const TimetableScreen = () => {
               <View style={styles.ocrStatsRow}>
                 <View style={styles.ocrStat}>
                   <Text style={styles.ocrStatLabel}>Engine</Text>
-                  <Text style={styles.ocrStatValue}>Tesseract</Text>
+                  <Text style={styles.ocrStatValue}>Gemini Vision API</Text>
                 </View>
                 <View style={styles.ocrStat}>
                   <Text style={styles.ocrStatLabel}>Confidence</Text>
                   <Text style={[styles.ocrStatValue, { color: theme.colors.accentGreen }]}>{ocrResult.confidence.toFixed(0)}%</Text>
                 </View>
                 <View style={styles.ocrStat}>
-                  <Text style={styles.ocrStatLabel}>Time</Text>
-                  <Text style={[styles.ocrStatValue, { color: theme.colors.accentCyan }]}>{(ocrResult.timeMs / 1000).toFixed(1)}s</Text>
-                </View>
-                <View style={styles.ocrStat}>
                   <Text style={styles.ocrStatLabel}>Classes</Text>
-                  <Text style={[styles.ocrStatValue, { color: theme.colors.accentOrange }]}>{extractedClasses.length}</Text>
+                  <Text style={[styles.ocrStatValue, { color: theme.colors.accentOrange }]}>{ocrResult.classCount}</Text>
                 </View>
               </View>
-            )}
-
-            {/* Raw OCR Text Preview */}
-            {ocrResult && ocrResult.rawText.length > 0 && (
-              <TouchableOpacity
-                style={styles.rawTextCard}
-                onPress={() => Alert.alert('Raw OCR Output', ocrResult.rawText.substring(0, 2000))}
-                activeOpacity={0.7}
-              >
-                <Ionicons name="code-outline" size={14} color={theme.colors.textMuted} />
-                <Text style={styles.rawTextPreview} numberOfLines={2}>{ocrResult.rawText.substring(0, 150)}</Text>
-                <Ionicons name="expand-outline" size={14} color={theme.colors.textMuted} />
-              </TouchableOpacity>
             )}
 
             {/* Extracted Classes grouped by day */}

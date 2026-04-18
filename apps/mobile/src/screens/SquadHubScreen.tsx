@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { theme } from '../styles/theme';
 import { KanbanTimeStamper } from '../native/KanbanTimeStamper.socket';
 import { useBatteryStore } from '../store/batteryStore';
+import { GroupChat } from '../components/GroupChat';
 
 const kanbanSocket = new KanbanTimeStamper();
 
@@ -44,6 +45,7 @@ export const SquadHubScreen = () => {
   const [newTaskText, setNewTaskText] = useState('');
   const [showInput, setShowInput] = useState(false);
   const [selectedPriority, setSelectedPriority] = useState<'low' | 'mid' | 'high'>('mid');
+  const [activeTab, setActiveTab] = useState<'kanban' | 'chat'>('kanban');
   const batterySaver = useBatteryStore((s) => s.batterySaverMode);
 
   // Move task with KanbanTimeStamper server relay stamp
@@ -166,12 +168,27 @@ export const SquadHubScreen = () => {
         {batterySaver && <Ionicons name="flash-outline" size={14} color={theme.colors.accentOrange} />}
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false}>
+      {/* Tabs */}
+      <View style={styles.tabRow}>
+        <TouchableOpacity style={[styles.tabBtn, activeTab === 'kanban' && styles.tabBtnActive]} onPress={() => setActiveTab('kanban')}>
+          <Ionicons name="albums-outline" size={16} color={activeTab === 'kanban' ? theme.colors.accentViolet : theme.colors.textMuted} />
+          <Text style={[styles.tabText, activeTab === 'kanban' && styles.tabTextActive]}>Kanban Board</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.tabBtn, activeTab === 'chat' && styles.tabBtnActive]} onPress={() => setActiveTab('chat')}>
+          <Ionicons name="chatbubbles-outline" size={16} color={activeTab === 'chat' ? theme.colors.accentViolet : theme.colors.textMuted} />
+          <Text style={[styles.tabText, activeTab === 'chat' && styles.tabTextActive]}>Discussion Hub</Text>
+        </TouchableOpacity>
+      </View>
+
+      {activeTab === 'chat' ? (
+        <GroupChat />
+      ) : (
+        <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
         {/* In Progress */}
         <View style={styles.colHeader}>
           <View style={styles.colHeaderLeft}>
             <View style={[styles.colDot, { backgroundColor: theme.colors.accentOrange }]} />
-            <Text style={styles.colTitle}>In Progress</Text>
+            <Text style={styles.colTitle}>What I am Doing</Text>
           </View>
           <View style={styles.countBadge}><Text style={styles.countText}>{doing.length}</Text></View>
         </View>
@@ -181,7 +198,7 @@ export const SquadHubScreen = () => {
         <View style={[styles.colHeader, { marginTop: 18 }]}>
           <View style={styles.colHeaderLeft}>
             <View style={[styles.colDot, { backgroundColor: theme.colors.accentBlue }]} />
-            <Text style={styles.colTitle}>To Do</Text>
+            <Text style={styles.colTitle}>What I Want to Do</Text>
           </View>
           <View style={styles.countBadge}><Text style={styles.countText}>{todo.length}</Text></View>
         </View>
@@ -226,6 +243,7 @@ export const SquadHubScreen = () => {
 
         <View style={{ height: 32 }} />
       </ScrollView>
+      )}
     </View>
   );
 };
@@ -243,6 +261,12 @@ const styles = StyleSheet.create({
   avatar: { width: 26, height: 26, borderRadius: 13, justifyContent: 'center', alignItems: 'center', borderWidth: 2, borderColor: theme.colors.background },
   avatarLetter: { color: theme.colors.white, fontSize: 11, fontWeight: '700' },
   onlineText: { color: theme.colors.accentRed, fontSize: 12, fontWeight: '600', flex: 1 },
+
+  tabRow: { flexDirection: 'row', backgroundColor: theme.colors.surface, borderRadius: theme.radius.md, padding: 4, marginBottom: 16 },
+  tabBtn: { flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 6, paddingVertical: 10, borderRadius: theme.radius.sm },
+  tabBtnActive: { backgroundColor: theme.colors.surfaceHover },
+  tabText: { color: theme.colors.textMuted, fontSize: 13, fontWeight: '600' },
+  tabTextActive: { color: theme.colors.accentViolet, fontWeight: '700' },
 
   colHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 },
   colHeaderLeft: { flexDirection: 'row', alignItems: 'center', gap: 8 },

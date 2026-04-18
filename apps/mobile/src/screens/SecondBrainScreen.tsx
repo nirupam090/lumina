@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import {
   View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView,
-  KeyboardAvoidingView, Platform, Alert,
+  KeyboardAvoidingView, Platform, Alert, Modal, SafeAreaView
 } from 'react-native';
+import { WebView } from 'react-native-webview';
 import { Ionicons } from '@expo/vector-icons';
 import { theme } from '../styles/theme';
 import { useBatteryStore } from '../store/batteryStore';
@@ -74,6 +75,7 @@ export const SecondBrainScreen = () => {
   const [results, setResults] = useState<{ chunk: VectorChunk; docTitle: string; score: number }[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
+  const [showOverleaf, setShowOverleaf] = useState(false);
   const batterySaver = useBatteryStore((s) => s.batterySaverMode);
 
   const handleSearch = () => {
@@ -171,7 +173,7 @@ export const SecondBrainScreen = () => {
           ))}
 
           {/* Overleaf Card */}
-          <TouchableOpacity style={styles.overleafCard} activeOpacity={0.8} onPress={() => Alert.alert('Overleaf Preview', 'In production, this opens a WebView to your team\'s compiled LaTeX report via webhook integration.')}>
+          <TouchableOpacity style={styles.overleafCard} activeOpacity={0.8} onPress={() => setShowOverleaf(true)}>
             <Ionicons name="document-text-outline" size={22} color={theme.colors.accentCyan} />
             <View style={{ flex: 1 }}>
               <Text style={styles.overleafTitle}>Overleaf LaTeX Preview</Text>
@@ -223,6 +225,26 @@ export const SecondBrainScreen = () => {
           <View style={{ height: 32 }} />
         </ScrollView>
       )}
+
+      {/* Overleaf WebView Modal */}
+      <Modal visible={showOverleaf} animationType="slide" presentationStyle="pageSheet">
+        <SafeAreaView style={styles.webviewContainer}>
+          <View style={styles.webviewHeader}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+              <Ionicons name="document-text" size={20} color={theme.colors.accentCyan} />
+              <Text style={styles.webviewTitle}>Lab_Report_V3.pdf (Overleaf)</Text>
+            </View>
+            <TouchableOpacity onPress={() => setShowOverleaf(false)}>
+              <Ionicons name="close-circle" size={26} color={theme.colors.textSecondary} />
+            </TouchableOpacity>
+          </View>
+          <WebView 
+            source={{ uri: 'https://arxiv.org/pdf/1706.03762.pdf' }} 
+            style={{ flex: 1, backgroundColor: theme.colors.background }} 
+            startInLoadingState={true}
+          />
+        </SafeAreaView>
+      </Modal>
     </KeyboardAvoidingView>
   );
 };
@@ -259,4 +281,8 @@ const styles = StyleSheet.create({
   sourceText: { color: theme.colors.accentBlue, fontSize: 10, fontWeight: '700' },
   docRef: { color: theme.colors.textMuted, fontSize: 11, flex: 1 },
   confText: { color: theme.colors.accentViolet, fontSize: 11, fontWeight: '700' },
+
+  webviewContainer: { flex: 1, backgroundColor: theme.colors.backgroundElevated },
+  webviewHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, borderBottomWidth: 1, borderBottomColor: theme.colors.border },
+  webviewTitle: { color: theme.colors.textPrimary, fontSize: 16, fontWeight: '600' },
 });
