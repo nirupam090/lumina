@@ -21,7 +21,15 @@
 - [x] Application Design 
 - [x] Units Generation
 
-### 🟢 BUILD PHASE
+### 🟢 BUILD PHASE (Unit 1 Complete)
+- [x] Functional Design
+- [x] NFR Requirements
+- [x] NFR Design
+- [x] Infrastructure Design
+- [x] Code Generation
+- [x] Build and Test
+
+### 🟢 BUILD PHASE (Unit 2: Timetable & Analytics)
 - [x] Functional Design
 - [x] NFR Requirements
 - [x] NFR Design
