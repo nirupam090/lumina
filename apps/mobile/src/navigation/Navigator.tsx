@@ -1,71 +1,106 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Text, Platform } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { DashboardScreen } from '../screens/DashboardScreen';
 import { TimetableScreen } from '../screens/TimetableScreen';
 import { SquadHubScreen } from '../screens/SquadHubScreen';
 import { SecondBrainScreen } from '../screens/SecondBrainScreen';
-import { GlobalModalStack } from './GlobalModalStack';
 import { theme } from '../styles/theme';
 
+type TabKey = 'home' | 'schedule' | 'brain' | 'squad';
+
+interface TabConfig {
+  key: TabKey;
+  label: string;
+  icon: keyof typeof Ionicons.glyphMap;
+  iconActive: keyof typeof Ionicons.glyphMap;
+  color: string;
+}
+
+const TABS: TabConfig[] = [
+  { key: 'home', label: 'Home', icon: 'grid-outline', iconActive: 'grid', color: theme.colors.accentBlue },
+  { key: 'schedule', label: 'Schedule', icon: 'calendar-outline', iconActive: 'calendar', color: theme.colors.accentViolet },
+  { key: 'brain', label: 'Brain', icon: 'search-outline', iconActive: 'search', color: theme.colors.accentCyan },
+  { key: 'squad', label: 'Squad', icon: 'people-outline', iconActive: 'people', color: theme.colors.accentPink },
+];
+
 export const Navigator = () => {
-  const [activeTab, setActiveTab] = useState<'DASHBOARD' | 'SCHEDULE' | 'SQUADS' | 'BRAIN'>('DASHBOARD');
-  const [modalVisible, setModalVisible] = useState(false);
+  const [activeTab, setActiveTab] = useState<TabKey>('home');
+
+  const renderScreen = () => {
+    switch (activeTab) {
+      case 'home': return <DashboardScreen />;
+      case 'schedule': return <TimetableScreen />;
+      case 'brain': return <SecondBrainScreen />;
+      case 'squad': return <SquadHubScreen />;
+    }
+  };
 
   return (
-    <View style={styles.container}>
-      
-      {/* 4 Pillars Routing explicitly */}
-      <View style={styles.screenContainer}>
-        {activeTab === 'DASHBOARD' && <DashboardScreen />}
-        {activeTab === 'SCHEDULE' && <TimetableScreen />}
-        {activeTab === 'BRAIN' && <SecondBrainScreen />}
-        {activeTab === 'SQUADS' && <SquadHubScreen />}
-      </View>
+    <View style={styles.root}>
+      <View style={styles.screenContainer}>{renderScreen()}</View>
 
-      {/* Hidden 5th Global Stack */}
-      <GlobalModalStack isVisible={modalVisible} modalType="pdf" closeModal={() => setModalVisible(false)} />
-
-      {/* React Navigation Native Bottom Tabs strictly mapped */}
-      <View style={styles.bottomTab}>
-        {['DASHBOARD', 'SCHEDULE', 'BRAIN', 'SQUADS'].map((tab) => (
-          <TouchableOpacity 
-            key={tab} 
-            style={[styles.tabButton, activeTab === tab && styles.tabButtonActive]}
-            onPress={() => setActiveTab(tab as any)}
-          >
-            <Text style={[styles.tabText, activeTab === tab && styles.tabTextActive]}>
-              {tab.substring(0,4)}
-            </Text>
-          </TouchableOpacity>
-        ))}
+      {/* Bottom Navigation */}
+      <View style={styles.navBar}>
+        {TABS.map((tab) => {
+          const isActive = activeTab === tab.key;
+          return (
+            <TouchableOpacity
+              key={tab.key}
+              style={styles.navItem}
+              onPress={() => setActiveTab(tab.key)}
+              activeOpacity={0.7}
+            >
+              <View style={[styles.navIconWrap, isActive && { backgroundColor: `${tab.color}15` }]}>
+                <Ionicons
+                  name={isActive ? tab.iconActive : tab.icon}
+                  size={22}
+                  color={isActive ? tab.color : theme.colors.textMuted}
+                />
+              </View>
+              <Text style={[styles.navLabel, isActive && { color: tab.color }]}>
+                {tab.label}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
       </View>
-      
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: theme.colors.background },
-  screenContainer: { flex: 1 },
-  bottomTab: {
-    flexDirection: 'row',
-    height: 85,
+  root: {
+    flex: 1,
     backgroundColor: theme.colors.background,
+  },
+  screenContainer: {
+    flex: 1,
+  },
+  navBar: {
+    flexDirection: 'row',
+    backgroundColor: theme.colors.backgroundElevated,
     borderTopWidth: 1,
     borderTopColor: theme.colors.border,
-    paddingTop: theme.spacing.s,
-    paddingHorizontal: theme.spacing.m,
+    paddingTop: 8,
+    paddingBottom: Platform.OS === 'ios' ? 28 : 12,
+    paddingHorizontal: 8,
   },
-  tabButton: {
+  navItem: {
     flex: 1,
     alignItems: 'center',
-    paddingVertical: 10,
-    marginHorizontal: 4,
-    borderRadius: 16,
+    gap: 4,
   },
-  tabButtonActive: {
-    backgroundColor: 'rgba(185, 43, 255, 0.1)', // Subtle Glassmorphism Violet Highlight
+  navIconWrap: {
+    width: 44,
+    height: 34,
+    borderRadius: 17,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  tabText: { color: theme.colors.textMuted, fontSize: 12, fontWeight: '700' },
-  tabTextActive: { color: theme.colors.accentSecondary }
+  navLabel: {
+    color: theme.colors.textMuted,
+    fontSize: 11,
+    fontWeight: '600',
+  },
 });

@@ -1,39 +1,61 @@
 export const theme = {
   colors: {
-    // Deep Dark Background exact match
     background: '#0B0B0F',
+    backgroundElevated: '#121218',
     
-    // Core structure
-    surface: 'rgba(255, 255, 255, 0.05)', // base glass
-    surfaceHighlight: 'rgba(255, 255, 255, 0.1)', // active glass
-    border: 'rgba(255, 255, 255, 0.08)',
+    surface: 'rgba(255, 255, 255, 0.04)',
+    surfaceHover: 'rgba(255, 255, 255, 0.08)',
+    surfaceActive: 'rgba(255, 255, 255, 0.12)',
     
-    // Accents mapped to Neon Blue & Violet visually
-    accentPrimary: '#00D1FF',   // Neon Blue
-    accentSecondary: '#B92BFF', // Neon Violet
+    border: 'rgba(255, 255, 255, 0.06)',
+    borderLight: 'rgba(255, 255, 255, 0.10)',
     
-    // Typography
-    textPrimary: '#FFFFFF',
-    textSecondary: 'rgba(255, 255, 255, 0.6)',
-    textMuted: 'rgba(255, 255, 255, 0.3)',
+    accentBlue: '#5B8DEF',
+    accentViolet: '#9D6BFF',
+    accentCyan: '#4ECDC4',
+    accentGreen: '#34D399',
+    accentOrange: '#F59E0B',
+    accentRed: '#EF4444',
+    accentPink: '#EC4899',
     
-    // Status Contexts
-    danger: '#FF3B30',
-    success: '#34C759',
-    warning: '#FFCC00',
+    textPrimary: '#F0F0F5',
+    textSecondary: 'rgba(240, 240, 245, 0.55)',
+    textMuted: 'rgba(240, 240, 245, 0.30)',
+    
+    white: '#FFFFFF',
   },
-  glassmorphism: {
-    // Standard frosted card CSS binding dynamically
-    borderRadius: 24,
-    borderWidth: 1,
-    overflow: 'hidden',
+  
+  radius: {
+    sm: 10,
+    md: 14,
+    lg: 20,
+    xl: 28,
+    full: 999,
   },
+  
   spacing: {
     xs: 4,
-    s: 8,
-    m: 16,
-    l: 24,
+    sm: 8,
+    md: 16,
+    lg: 24,
     xl: 32,
     xxl: 48,
-  }
+  },
+
+  shadow: {
+    card: {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 8 },
+      shadowOpacity: 0.25,
+      shadowRadius: 16,
+      elevation: 8,
+    },
+    glow: (color: string) => ({
+      shadowColor: color,
+      shadowOffset: { width: 0, height: 0 },
+      shadowOpacity: 0.35,
+      shadowRadius: 12,
+      elevation: 6,
+    }),
+  },
 };
