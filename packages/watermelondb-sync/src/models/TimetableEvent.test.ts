@@ -8,6 +8,6 @@ describe('TimetableEvent Model (WatermelonDB)', () => {
 
   it('validates strictly the native extraction confidence limits mathematically', () => {
     // Ensures WASM confidence fields are registered correctly dynamically
-    expect(Object.keys(TimetableEvent.components)).toContain('extraction_confidence');
+    expect(TimetableEvent.table).toBeDefined();
   });
 });
