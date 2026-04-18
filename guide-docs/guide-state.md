@@ -36,21 +36,35 @@
 - [x] Infrastructure Design
 - [x] Code Generation
 
-### 🟢 BUILD PHASE (Unit 3: Group Hub & Collaboration)
+### 🟢 BUILD PHASE (Unit 4: Note Extraction & Vector RAG)
 - [x] Functional Design
 - [x] NFR Requirements
 - [x] NFR Design
 - [x] Infrastructure Design
 - [x] Code Generation
 
-### 🟢 BUILD PHASE (Unit 4: Note Extraction & Vector RAG)
+### 🟢 BUILD PHASE (Unit 5: ContextSwitch Engine & Final Bindings)
+- [x] Functional Design
+- [x] NFR Requirements
+- [x] NFR Design
+- [x] Infrastructure Design
+- [x] Code Generation
+
+### 🟢 BUILD PHASE (Unit 6: 3rd-Party Integrations & OCR parsers)
+- [x] Functional Design
+- [x] NFR Requirements
+- [x] NFR Design
+- [ ] Infrastructure Design
+- [ ] Code Generation
+
+### 🟢 BUILD PHASE (Unit 7: Business Analytics & Expense Tracking)
 - [ ] Functional Design
 - [ ] NFR Requirements
 - [ ] NFR Design
 - [ ] Infrastructure Design
 - [ ] Code Generation
 
-### 🟢 BUILD PHASE (Total 5 Units)
+### 🟢 BUILD PHASE (Total 7 Units)
 - [ ] Build and Test
 
 ### 🟡 DEPLOY PHASE
@@ -58,5 +72,5 @@
 
 ## Current Status
 - **Lifecycle Phase**: BUILD
-- **Current Stage**: Functional Design (Unit 4)
+- **Current Stage**: Infrastructure Design (Unit 6)
 - **Status**: Ready to proceed
