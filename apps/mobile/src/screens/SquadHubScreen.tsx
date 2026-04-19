@@ -45,7 +45,7 @@ export const SquadHubScreen = () => {
   const [newTaskText, setNewTaskText] = useState('');
   const [showInput, setShowInput] = useState(false);
   const [selectedPriority, setSelectedPriority] = useState<'low' | 'mid' | 'high'>('mid');
-  const [activeTab, setActiveTab] = useState<'kanban' | 'chat'>('kanban');
+  const [activeTab, setActiveTab] = useState<'kanban' | 'chat' | 'flow'>('kanban');
   const batterySaver = useBatteryStore((s) => s.batterySaverMode);
 
   // Move task with KanbanTimeStamper server relay stamp
@@ -176,12 +176,42 @@ export const SquadHubScreen = () => {
         </TouchableOpacity>
         <TouchableOpacity style={[styles.tabBtn, activeTab === 'chat' && styles.tabBtnActive]} onPress={() => setActiveTab('chat')}>
           <Ionicons name="chatbubbles-outline" size={16} color={activeTab === 'chat' ? theme.colors.accentViolet : theme.colors.textMuted} />
-          <Text style={[styles.tabText, activeTab === 'chat' && styles.tabTextActive]}>Discussion Hub</Text>
+          <Text style={[styles.tabText, activeTab === 'chat' && styles.tabTextActive]}>Discussion</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.tabBtn, activeTab === 'flow' && styles.tabBtnActive]} onPress={() => setActiveTab('flow')}>
+          <Ionicons name="analytics-outline" size={16} color={activeTab === 'flow' ? theme.colors.accentViolet : theme.colors.textMuted} />
+          <Text style={[styles.tabText, activeTab === 'flow' && styles.tabTextActive]}>Flow Graph</Text>
         </TouchableOpacity>
       </View>
 
       {activeTab === 'chat' ? (
         <GroupChat />
+      ) : activeTab === 'flow' ? (
+        <View style={styles.flowContainer}>
+          <Ionicons name="git-network-outline" size={48} color={theme.colors.accentCyan} />
+          <Text style={styles.flowTitle}>Anonymized Flow Graph</Text>
+          <Text style={styles.flowDesc}>
+            See Deep Focus metrics across your Study Squad. Peer pressure meets cognitive debt tracking!
+          </Text>
+          
+          <View style={styles.flowCard}>
+            <View style={styles.flowRow}>
+              <Text style={styles.flowLabel}>User A</Text>
+              <View style={styles.flowBarTrack}><View style={[styles.flowBarFill, { width: '85%', backgroundColor: theme.colors.accentGreen }]} /></View>
+              <Text style={styles.flowScore}>92%</Text>
+            </View>
+            <View style={styles.flowRow}>
+              <Text style={styles.flowLabel}>User B</Text>
+              <View style={styles.flowBarTrack}><View style={[styles.flowBarFill, { width: '60%', backgroundColor: theme.colors.accentOrange }]} /></View>
+              <Text style={styles.flowScore}>60%</Text>
+            </View>
+            <View style={styles.flowRow}>
+              <Text style={styles.flowLabel}>You</Text>
+              <View style={styles.flowBarTrack}><View style={[styles.flowBarFill, { width: '95%', backgroundColor: theme.colors.accentViolet }]} /></View>
+              <Text style={styles.flowScore}>95%</Text>
+            </View>
+          </View>
+        </View>
       ) : (
         <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
         {/* In Progress */}
@@ -295,4 +325,14 @@ const styles = StyleSheet.create({
   priText: { fontSize: 11, fontWeight: '700', textTransform: 'uppercase' },
   confirmBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, backgroundColor: theme.colors.accentViolet, borderRadius: theme.radius.sm, paddingVertical: 10 },
   confirmText: { color: theme.colors.white, fontWeight: '700', fontSize: 13 },
+
+  flowContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 20 },
+  flowTitle: { color: theme.colors.textPrimary, fontSize: 18, fontWeight: '700', marginTop: 16 },
+  flowDesc: { color: theme.colors.textMuted, fontSize: 13, textAlign: 'center', marginTop: 8, lineHeight: 20 },
+  flowCard: { backgroundColor: theme.colors.surface, borderRadius: theme.radius.lg, padding: 20, width: '100%', marginTop: 24, borderWidth: 1, borderColor: theme.colors.border },
+  flowRow: { flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 16 },
+  flowLabel: { color: theme.colors.textSecondary, width: 45, fontSize: 12, fontWeight: '600' },
+  flowBarTrack: { flex: 1, height: 6, backgroundColor: theme.colors.surfaceHover, borderRadius: 3 },
+  flowBarFill: { height: 6, borderRadius: 3 },
+  flowScore: { color: theme.colors.textPrimary, width: 35, fontSize: 12, fontWeight: '700', textAlign: 'right' },
 });
